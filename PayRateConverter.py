@@ -21,107 +21,32 @@ else:
 root.iconbitmap(default=f'{icon}')
 ctk.set_appearance_mode(f'{set_mode}')
 
-def error_msg(value):   # Displays the Appropriate Error Message
-    if value == 0:
-        msg = 'You must make a valid selection to convert to'
-    else:
-        msg = 'Please enter a number greater than 0'
-    error = messagebox.showwarning('Pay Rate Converter Error', 'INVALID ENTRY!!\n\n' + msg)
-    main()
+
 
 def error_handling(frequency, selection):   # Error Handling and Control
 
+    def error_msg(value):   # Displays the Appropriate Error Message
+        if value == 0:
+            msg = 'You must make a valid selection to convert to'
+        else:
+            msg = 'Please enter a number greater than 0'
+        messagebox.showwarning('Pay Rate Converter Error', 'INVALID ENTRY!!\n\n' + msg)
+        main()
+        
     try:    # Verifies that a To selection was made (no longer needed)
         selection = int(selection)
     except:
         error_msg(0)
     else:
         try:    # Verifies Entry
-            pay = abs(float(enter.get()))    # Verifies that a Number was Entered
+            pay = abs(float(ctk.CTkEntry(root, width=90).get()))    # Verifies that a Number was Entered
             test = 24 / pay             # Verifies that the Entered Number is Not 0
         except:
             error_msg(1)
         else:
             msg_text = calculations.case(frequency, selection, pay)
             results(msg_text)
-
-def results(msg_text):  # Displays the Final Results in a New Window
-    AMT = '{0:,.2f}'
-    i = 0
-    result = ctk.CTkToplevel()
-    result.title('PayCalc Results')
-    result.after(200, lambda: result.iconbitmap(bitmap=icon))
-    for text, amt in msg_text:  # Creates Labels for the Results
-        ctk.CTkLabel(result, text= text).grid(row=i, column=0, sticky='w', padx=20)
-        ctk.CTkLabel(result, text= '$' + AMT.format(amt)).grid(row=i, column=1, sticky='w', padx=20)
-        i = i + 1
-    result_label = ctk.CTkLabel(result, text= 'Do you want to continue?')
-    continue_btn = ctk.CTkButton(result, text='yes', command=result.destroy)
-    quit_btn = ctk.CTkButton(result, text='No', command=root.destroy)
-    result_label.grid(row=i, column=0, columnspan=2)
-    continue_btn.grid(row=i + 1, column=0, sticky='w', padx=10, pady=10)
-    quit_btn.grid(row=i + 1, column=1, sticky='e', padx=10, pady=10)
-    result.grab_set()
-    clear_entry()
-
-def enable_to():    # Enables the Buttons to Convert To
-    i = 2   # Designates the Starting Row Number (the first button will be in the third row, or row=2)
-    match int(from_btns.get()):    # Disables the Button that equals the Converting From Selection
-        case 1:
-            for text, value in SELECT:
-                if value == 1:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-                else:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-        case 2:
-            for text, value in SELECT:
-                if value == 2:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-                else:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-        case 3:
-            for text, value in SELECT:
-                if value == 3:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-                else:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-        case 4:
-            for text, value in SELECT:
-                if value == 4:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-                else:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-        case 5:
-            for text, value in SELECT:
-                if value == 5:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-                else:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-        case 6:
-            for text, value in SELECT:
-                if value == 6:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-                else:
-                    ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
-                    i = i + 1
-    to_all = ctk.CTkRadioButton(root, text='All', variable=to_btns, value=0, state='normal')
-    to_all.invoke(1)   # Sets Default Selection
-    to_all.grid(row=i, column=1, sticky='w')
-
-    # Enables the Enter Button 
-    enter_btn = ctk.CTkButton(root, text='ENTER', width=20, state='normal', command=lambda: error_handling(from_btns.get(), to_btns.get()))
-    enter_btn.grid(row=i+1, column=0, columnspan=2, padx=10, pady=10, sticky='we')
+            clear_entry()
 
 # Changes the Default Mode (light, dark)
 def mode(value):
@@ -173,17 +98,89 @@ def help():
     help_btn.pack(pady=10)
     help_win.grab_set()
 
+def results(msg_text):  # Displays the Final Results in a New Window
+    AMT = '{0:,.2f}'
+    i = 0
+    result = ctk.CTkToplevel()
+    result.title('PayCalc Results')
+    result.after(200, lambda: result.iconbitmap(bitmap=icon))
+    for text, amt in msg_text:  # Creates Labels for the Results
+        ctk.CTkLabel(result, text= text).grid(row=i, column=0, sticky='w', padx=20)
+        ctk.CTkLabel(result, text= '$' + AMT.format(amt)).grid(row=i, column=1, sticky='w', padx=20)
+        i = i + 1
+    result_label = ctk.CTkLabel(result, text= 'Do you want to continue?')
+    continue_btn = ctk.CTkButton(result, text='yes', command=result.destroy)
+    quit_btn = ctk.CTkButton(result, text='No', command=root.destroy)
+    result_label.grid(row=i, column=0, columnspan=2)
+    continue_btn.grid(row=i + 1, column=0, sticky='w', padx=10, pady=10)
+    quit_btn.grid(row=i + 1, column=1, sticky='e', padx=10, pady=10)
+    result.grab_set()
+
 # Clears the Entry Box and Resets
 def clear_entry():
-    enter.delete(0, 'end')
+    ctk.CTkEntry(root, width=90).delete(0, 'end')
     main()
 
 def main():  # Set up the gui
-    global from_btns
-    global to_btns
-    global enter
-    global msg_text
-    global SELECT
+    
+    def enable_to():    # Enables the Buttons to Convert To
+        i = 2   # Designates the Starting Row Number (the first button will be in the third row, or row=2)
+        match int(from_btns.get()):    # Disables the Button that equals the Converting From Selection
+            case 1:
+                for text, value in SELECT:
+                    if value == 1:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+                    else:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+            case 2:
+                for text, value in SELECT:
+                    if value == 2:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+                    else:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+            case 3:
+                for text, value in SELECT:
+                    if value == 3:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+                    else:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+            case 4:
+                for text, value in SELECT:
+                    if value == 4:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+                    else:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+            case 5:
+                for text, value in SELECT:
+                    if value == 5:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+                    else:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+            case 6:
+                for text, value in SELECT:
+                    if value == 6:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='disable').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+                    else:
+                        ctk.CTkRadioButton(root, text=text, variable=to_btns, value=value, state='normal').grid(row=i, column=1, sticky='w')
+                        i = i + 1
+        to_all = ctk.CTkRadioButton(root, text='All', variable=to_btns, value=0, state='normal')
+        to_all.invoke(1)   # Sets Default Selection
+        to_all.grid(row=i, column=1, sticky='w')
+
+        # Enables the Enter Button 
+        enter_btn = ctk.CTkButton(root, text='ENTER', width=20, state='normal', command=lambda: error_handling(from_btns.get(), to_btns.get()))
+        enter_btn.grid(row=i+1, column=0, columnspan=2, padx=10, pady=10, sticky='we')
     
     SELECT = [
         ('Hourly', 1),
