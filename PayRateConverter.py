@@ -217,7 +217,7 @@ def main():  # Set up the gui
 # Set up the Clear, Enter, and Cancel Buttons
     clear_btn = ctk.CTkButton(root, text='CLEAR', width=10, command=clear_entry)
     clear_btn.grid(row=i, column=0, sticky='w', padx=10, pady=5)
-    enter_btn = ctk.CTkButton(root, text='ENTER', state='disabled', command=lambda: error_handling(from_btns.get(), to_btns.get()))
+    enter_btn = ctk.CTkButton(root, text='ENTER', state='disabled')
     enter_btn.grid(row=i+1, column=0, columnspan=2, padx=10, pady=10, sticky='we')
     cancel_btn = ctk.CTkButton(root, text='CANCEL', command= root.destroy)
     cancel_btn.grid(row=i+2, column=0, columnspan=2, padx=10, sticky='we')
