@@ -5,14 +5,18 @@
 import tkinter as tk
 import customtkinter as ctk
 from tkinter import messagebox
+import configparser
 import calculations
+import usedWind
 
 # Set up the Main Window
 root = ctk.CTk()
 root.title('Pay Rate Converter')
 root.geometry('250x410')
 # Set the Default Appearance Mode
-set_mode = 'dark'
+config = configparser.ConfigParser()
+config.read('settings.ini')
+set_mode = config['ENVIRONMENT']['mode']
 
 if set_mode == 'dark':
     icon = 'assets/dollar-dark2.ico'
@@ -23,7 +27,7 @@ ctk.set_appearance_mode(f'{set_mode}')
 
 
 
-def error_handling(frequency, selection):   # Error Handling and Control
+def error_handling(frequency, selection, enter):   # Error Handling and Control
 
     def error_msg(value):   # Displays the Appropriate Error Message
         if value == 0:
@@ -39,8 +43,8 @@ def error_handling(frequency, selection):   # Error Handling and Control
         error_msg(0)
     else:
         try:    # Verifies Entry
-            pay = abs(float(ctk.CTkEntry(root, width=90).get()))    # Verifies that a Number was Entered
-            test = 24 / pay             # Verifies that the Entered Number is Not 0
+            pay = abs(float(enter.get()))    # Verifies that a Number was Entered
+            _ = 24 / pay             # Verifies that the Entered Number is Not 0
         except:
             error_msg(1)
         else:
@@ -49,54 +53,22 @@ def error_handling(frequency, selection):   # Error Handling and Control
             clear_entry()
 
 # Changes the Default Mode (light, dark)
-def mode(value):
-    global icon
-    global set_mode
-    match value:
+def mode(value, icon):
+
+    set_mode = value
+
+    match set_mode:
         case 'light': 
-            set_mode = 'light'
             icon = 'assets/dollar.ico'
         case 'dark': 
-            set_mode = 'dark'
             icon = 'assets/dollar-dark2.ico'
     ctk.set_appearance_mode(set_mode)
     root.iconbitmap(f'{icon}')
+    
+    config['ENVIRONMENT']['mode'] = set_mode
+    with open('settings.ini', 'w') as configfile:
+        config.write(configfile)
 
-# Displays the About Information in a New Window
-def about():
-    ABOUT_TXT = ['Pay Rate Converter', 'by Aaron Gallaway', '(c)2023', 'Version: 1.0']
-    about_win = ctk.CTkToplevel()
-    about_win.geometry('250x175')
-    about_win.title('About Pay Rate Converter')
-    about_win.after(200, lambda: about_win.iconbitmap(bitmap=icon))
-    for i in range(len(ABOUT_TXT)):
-        txt = ABOUT_TXT[i]
-        ctk.CTkLabel(about_win, text=txt).pack(padx=40)
-    about_btn = ctk.CTkButton(about_win, text='OK', width=135, command=about_win.destroy)
-    about_btn.pack(padx=50, pady=10)
-    about_win.grab_set()
-
-# Displays the Help Information in a New Window
-def help():
-    help_win = ctk.CTkToplevel()
-    help_win.geometry('250x200')
-    help_win.title('Pay Rate Converter Help')
-    help_win.after(200, lambda: help_win.iconbitmap(bitmap=icon))
-    help_txt ='''Enter the amount of pay in the entry box.
-    Make a selection in the To column.
-    The From Column will become available.
-    Make a selection in the From column.
-    All is selected by default.
-    Clicking Clear will reset.
-    Clicking Cancel will close the app.
-    Click Enter.
-    The results will display in a new window.
-    To continue, click Yes. To quit, click No.'''
-    help_lable = ctk.CTkLabel(help_win, text=help_txt)
-    help_lable.pack()
-    help_btn = ctk.CTkButton(help_win, text='OK', command=help_win.destroy)
-    help_btn.pack(pady=10)
-    help_win.grab_set()
 
 def results(msg_text):  # Displays the Final Results in a New Window
     AMT = '{0:,.2f}'
@@ -122,7 +94,7 @@ def clear_entry():
     main()
 
 def main():  # Set up the gui
-    
+
     def enable_to():    # Enables the Buttons to Convert To
         i = 2   # Designates the Starting Row Number (the first button will be in the third row, or row=2)
         match int(from_btns.get()):    # Disables the Button that equals the Converting From Selection
@@ -179,7 +151,7 @@ def main():  # Set up the gui
         to_all.grid(row=i, column=1, sticky='w')
 
         # Enables the Enter Button 
-        enter_btn = ctk.CTkButton(root, text='ENTER', width=20, state='normal', command=lambda: error_handling(from_btns.get(), to_btns.get()))
+        enter_btn = ctk.CTkButton(root, text='ENTER', width=20, state='normal', command=lambda: error_handling(from_btns.get(), to_btns.get(), enter))
         enter_btn.grid(row=i+1, column=0, columnspan=2, padx=10, pady=10, sticky='we')
     
     SELECT = [
@@ -199,7 +171,7 @@ def main():  # Set up the gui
     to_label = ctk.CTkLabel(root, text='To:')
     from_label.grid(row=1, column=0, padx=10, sticky='w')
     to_label.grid(row=1, column=1, sticky='w')
-    
+
 # Set up the Convert From Buttons (frequency) and Convert To Buttons (selection)
     from_btns = ctk.StringVar()
     to_btns = ctk.StringVar()
@@ -229,14 +201,14 @@ file_menu.add_command(label='Exit', command=root.destroy)
 menu_bar.add_cascade(label='File', menu=file_menu)
 # Set up the View Menu <Light, Dark>
 view_menu = tk.Menu(menu_bar, tearoff=0)
-view_menu.add_radiobutton(label='Light', state='normal', value='light', command=lambda: mode('light'))
-view_menu.add_radiobutton(label='Dark', state='active', value='dark', command=lambda: mode('dark'))
+view_menu.add_radiobutton(label='Light', state='normal', value='light', command=lambda: mode('light', icon))
+view_menu.add_radiobutton(label='Dark', state='active', value='dark', command=lambda: mode('dark', icon))
 menu_bar.add_cascade(label='View', menu=view_menu)
 
 help_menu = tk.Menu(menu_bar, tearoff=0)
-help_menu.add_command(label='Help', command=help)
+help_menu.add_command(label='Help', command=lambda: usedWind.help(icon))
 help_menu.add_separator()
-help_menu.add_command(label='About...', command=about)
+help_menu.add_command(label='About...', command=lambda: usedWind.about(icon))
 menu_bar.add_cascade(label='Help', menu=help_menu)
 
 main()
