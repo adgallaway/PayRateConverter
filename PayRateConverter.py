@@ -28,11 +28,14 @@ ctk.set_appearance_mode(f'{set_mode}')
 def error_msg(value):   # Displays the Appropriate Error Message
     if value == 0:
         msg = 'You must make a valid selection to convert to'
+        error = 'INVALID SELECTION!!'
     elif value == 1:
         msg = 'Please enter a number greater than 0'
+        error = 'INVALID ENTRY!!'
     elif value == 2:
         msg = 'ERROR writing to settings file!\nPlease try again.'
-    messagebox.showwarning('Pay Rate Converter Error', 'INVALID ENTRY!!\n\n' + msg)
+        error = 'CONFIG FILE ERROR!!'
+    messagebox.showwarning('Pay Rate Converter Error', + error + '\n\n' + msg)
     main()
 
 def error_handling(frequency, selection, enter):   # Error Handling and Control
@@ -83,14 +86,22 @@ def mode(value, icon):
 
 
 def results(msg_text):  # Displays the Final Results in a New Window
+    show_taxed = config['TAX']['show_after_tax']
     AMT = '{0:,.2f}'
     i = 0
     result = ctk.CTkToplevel()
     result.title('PayCalc Results')
     result.after(200, lambda: result.iconbitmap(bitmap=icon))
-    for text, amt in msg_text:  # Creates Labels for the Results
+    ctk.CTkLabel(result, text= 'Before Estimated Tax').grid(row=0, column=1, sticky='w', padx=20)
+    if show_taxed == 'yes':
+        ctk.CTkLabel(result, text= 'After Estimated Tax').grid(row=0, column=2, sticky='w', padx=20)
+    print(msg_text)
+    for text, amt, taxed in msg_text:  # Creates Labels for the Results
+        i = i + 1
         ctk.CTkLabel(result, text= text).grid(row=i, column=0, sticky='w', padx=20)
         ctk.CTkLabel(result, text= '$' + AMT.format(amt)).grid(row=i, column=1, sticky='w', padx=20)
+        if show_taxed == 'yes':
+            ctk.CTkLabel(result, text= '$' + AMT.format(taxed)).grid(row=i, column=2, sticky='w', padx=20)
         i = i + 1
     result_label = ctk.CTkLabel(result, text= 'Do you want to continue?')
     continue_btn = ctk.CTkButton(result, text='yes', command=result.destroy)

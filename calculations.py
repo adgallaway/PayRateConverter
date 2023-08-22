@@ -19,8 +19,8 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
             case 5: hourlyPay = float(((pay * 12) / 52) / work_week)    # Paid Monthly
             case 6: hourlyPay =float((pay / 52) / work_week)            # Paid Annually
         text = "Estimated Hourly pay:"
-        taxed = estTax.tax(pay)
-        tup = (text, hourlyPay)
+        taxed = estTax.tax(hourlyPay)
+        tup = (text, hourlyPay, taxed)
         msg_text.append(tup)
 
     def weekly(): #Perform Calculation for Weekly Pay
@@ -32,8 +32,8 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
             case 5: weeklyPay = float((pay * 12) / 52)  # Paid Monthly
             case 6: weeklyPay =float(pay / 52)          # Paid Annually
         text = "Estimated Weekly pay:"
-        taxed = estTax.tax(pay)
-        tup = (text, weeklyPay)
+        taxed = estTax.tax(weeklyPay)
+        tup = (text, weeklyPay, taxed)
         msg_text.append(tup)
 
     def biweekly(): #Perform Calculation for Bi-Weekly Pay
@@ -45,8 +45,8 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
             case 5: biWeeklyPay = float(((pay * 12) / 52) * 2)  # Paid Monthly
             case 6: biWeeklyPay =float((pay / 52) * 2)          # Paid Annually
         text = "Estimated Bi-Weekly pay:"
-        taxed = estTax.tax(pay)
-        tup = (text, biWeeklyPay)
+        taxed = estTax.tax(biWeeklyPay)
+        tup = (text, biWeeklyPay, taxed)
         msg_text.append(tup)
 
     def semimonthly(): #Perform Calculation for Monthly Pay
@@ -58,8 +58,8 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
             case 5: semimonthlypay = float(pay / 2)                         # Paid Monthly
             case 6: semimonthlypay = float(pay / 24)                        # Paid Annually
         text = "Estimated Semi-Monthly pay:"
-        taxed = estTax.tax(pay)
-        tup = (text, semimonthlypay)
+        taxed = estTax.tax(semimonthlypay)
+        tup = (text, semimonthlypay, taxed)
         msg_text.append(tup)
 
     def monthly(): #Perform Calculation for Monthly Pay
@@ -71,8 +71,8 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
             case 5: monthlyPay = float(pay)                             # Paid Monthly
             case 6: monthlyPay = float(pay / 12)                        # Paid Annually
         text = "Estimated Monthly pay:"
-        taxed = estTax.tax(pay)
-        tup = (text, monthlyPay)
+        taxed = estTax.tax(monthlyPay)
+        tup = (text, monthlyPay, taxed)
         msg_text.append(tup)
 
     def annually(): #Perform Calculation for Annual Pay
@@ -84,8 +84,8 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
             case 5: annualPay = float(pay * 12)                 # Paid Monthly
             case 6: annualPay = float(pay)                      # Paid Annually
         text = "Estimated Annual pay:"
-        taxed = estTax.tax(pay)
-        tup = (text, annualPay)
+        taxed = estTax.tax(annualPay)
+        tup = (text, annualPay, taxed)
         msg_text.append(tup)
 
     
