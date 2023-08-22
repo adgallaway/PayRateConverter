@@ -25,18 +25,18 @@ else:
 root.iconbitmap(default=f'{icon}')
 ctk.set_appearance_mode(f'{set_mode}')
 
-
+def error_msg(value):   # Displays the Appropriate Error Message
+    if value == 0:
+        msg = 'You must make a valid selection to convert to'
+    elif value == 1:
+        msg = 'Please enter a number greater than 0'
+    elif value == 2:
+        msg = 'ERROR writing to settings file!\nPlease try again.'
+    messagebox.showwarning('Pay Rate Converter Error', 'INVALID ENTRY!!\n\n' + msg)
+    main()
 
 def error_handling(frequency, selection, enter):   # Error Handling and Control
 
-    def error_msg(value):   # Displays the Appropriate Error Message
-        if value == 0:
-            msg = 'You must make a valid selection to convert to'
-        else:
-            msg = 'Please enter a number greater than 0'
-        messagebox.showwarning('Pay Rate Converter Error', 'INVALID ENTRY!!\n\n' + msg)
-        main()
-        
     try:    # Verifies that a To selection was made (no longer needed)
         selection = int(selection)
     except:
@@ -51,6 +51,18 @@ def error_handling(frequency, selection, enter):   # Error Handling and Control
             msg_text = calculations.case(frequency, selection, pay)
             results(msg_text)
             clear_entry()
+
+# Save custom settings (hours/day, days/week, & est. tax rate)
+def settings(hours, days, tax_rate):
+    try:
+        config['WORK.WEEK']['hours'] = hours
+        config['WORK.WEEK']['days'] = days
+        config['TAX']['rate'] = tax_rate
+        with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
+    except:
+        error_msg(2)
+    return
 
 # Changes the Default Mode (light, dark)
 def mode(value, icon):
