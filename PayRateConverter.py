@@ -17,6 +17,7 @@ root.geometry('250x410')
 config = configparser.ConfigParser()
 config.read('settings.ini')
 set_mode = config['ENVIRONMENT']['mode']
+show_after_tax = config['TAX']['show_after_tax']
 
 if set_mode == 'dark':
     icon = 'assets/dollar-dark2.ico'
@@ -54,6 +55,17 @@ def error_handling(frequency, selection, enter):   # Error Handling and Control
             msg_text = calculations.case(frequency, selection, pay)
             results(msg_text)
             clear_entry()
+
+# Change show tax setting
+def savecheck():
+    global show_after_tax
+    show_after_tax = show_tax.get()
+
+def set_show_tax():
+    print('set_show_tax')
+    config['TAX']['show_after_tax'] = str(show_tax.get())
+    with open('settings.ini', 'w') as configfile:
+            config.write(configfile)
 
 # Save custom settings (hours/day, days/week, & est. tax rate)
 def settings(hours, days, tax_rate):
@@ -93,14 +105,13 @@ def results(msg_text):  # Displays the Final Results in a New Window
     result.title('PayCalc Results')
     result.after(200, lambda: result.iconbitmap(bitmap=icon))
     ctk.CTkLabel(result, text= 'Before Estimated Tax').grid(row=0, column=1, sticky='w', padx=20)
-    if show_taxed == 'yes':
+    if show_taxed == '1':
         ctk.CTkLabel(result, text= 'After Estimated Tax').grid(row=0, column=2, sticky='w', padx=20)
-    print(msg_text)
     for text, amt, taxed in msg_text:  # Creates Labels for the Results
         i = i + 1
         ctk.CTkLabel(result, text= text).grid(row=i, column=0, sticky='w', padx=20)
         ctk.CTkLabel(result, text= '$' + AMT.format(amt)).grid(row=i, column=1, sticky='w', padx=20)
-        if show_taxed == 'yes':
+        if show_taxed == '1':
             ctk.CTkLabel(result, text= '$' + AMT.format(taxed)).grid(row=i, column=2, sticky='w', padx=20)
         i = i + 1
     result_label = ctk.CTkLabel(result, text= 'Do you want to continue?')
@@ -214,6 +225,7 @@ def main():  # Set up the gui
     cancel_btn = ctk.CTkButton(root, text='CANCEL', command= root.destroy)
     cancel_btn.grid(row=i+2, column=0, columnspan=2, padx=10, sticky='we')
 
+show_tax = tk.IntVar(root, show_after_tax)
 # Set up the Menu
 menu_bar = tk.Menu(root)
 # Set up the File Menu <New, Exit>
@@ -226,6 +238,7 @@ menu_bar.add_cascade(label='File', menu=file_menu)
 view_menu = tk.Menu(menu_bar, tearoff=0)
 view_menu.add_radiobutton(label='Light', state='normal', value='light', command=lambda: mode('light', icon))
 view_menu.add_radiobutton(label='Dark', state='active', value='dark', command=lambda: mode('dark', icon))
+view_menu.add_checkbutton(label= 'Show After Tax', state='active', onvalue= 1, offvalue= 0, variable= show_tax, command= set_show_tax)
 menu_bar.add_cascade(label='View', menu=view_menu)
 
 help_menu = tk.Menu(menu_bar, tearoff=0)
