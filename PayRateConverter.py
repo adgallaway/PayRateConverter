@@ -67,16 +67,62 @@ def set_show_tax():
             config.write(configfile)
 
 # Save custom settings (hours/day, days/week, & est. tax rate)
-def settings(hours, days, tax_rate):
-    try:
-        config['WORK.WEEK']['hours'] = hours
-        config['WORK.WEEK']['days'] = days
-        config['TAX']['rate'] = tax_rate
-        with open('settings.ini', 'w') as configfile:
-            config.write(configfile)
-    except:
-        error_msg(2)
-    return
+
+
+def set_tax_rate():
+
+    def change_tax():
+        try:
+            config['TAX']['rate'] = input_tax.get()
+            with open('settings.ini', 'w') as configfile:
+                config.write(configfile)
+        except:
+            error_msg(2)
+        tax_win.destroy()
+
+    tax_win = ctk.CTkToplevel()
+    tax_win.title('PRC Set Estimated Tax Rate')
+    tax_win.after(200, lambda: tax_win.iconbitmap(bitmap=icon))
+    input_tax = ctk.CTkEntry(tax_win, width=90)
+    input_tax.grid(row= 0, column= 1)
+    tax_label = ctk.CTkLabel(tax_win, width=90, text= 'Estimated Tax Rate:')
+    tax_label.grid(row= 0, column= 0)
+    cancel_btn = ctk.CTkButton(tax_win, text='Cancel', command=tax_win.destroy)
+    commit_btn = ctk.CTkButton(tax_win, text='Commit', command= change_tax)
+    cancel_btn.grid(row= 1, column= 0, pady = 20)
+    commit_btn.grid(row= 1, column= 2, pady = 20)
+
+
+
+def change_workweek():
+
+    def change_settings():
+        try:
+            config['WORK.WEEK']['hours'] = input_hours.get()
+            config['WORK.WEEK']['days'] = input_days.get()
+            with open('settings.ini', 'w') as configfile:
+                config.write(configfile)
+        except:
+            error_msg(2)
+        set_workweek.destroy()
+
+    set_workweek = ctk.CTkToplevel()
+    set_workweek.title('PRC Work Week Settings')
+    set_workweek.after(200, lambda: set_workweek.iconbitmap(bitmap=icon))
+    input_hours = ctk.CTkEntry(set_workweek, width=90)
+    hours_label= ctk.CTkLabel(set_workweek, width=90, text= 'Hours per Day')
+    input_days = ctk.CTkEntry(set_workweek, width=90)
+    days_label = ctk.CTkLabel(set_workweek, width=90, text= 'Days per Week')
+    input_hours.grid(row= 0, column= 0)
+    hours_label.grid(row= 0, column= 1)
+    input_days.grid(row= 0, column= 2)
+    days_label.grid(row= 0, column= 3)
+    cancel_btn = ctk.CTkButton(set_workweek, text='Cancel', command=set_workweek.destroy)
+    commit_btn = ctk.CTkButton(set_workweek, text='Commit', command= change_settings)
+    cancel_btn.grid(row= 1, column= 0, pady = 20)
+    commit_btn.grid(row= 1, column= 2, pady = 20)
+
+    
 
 # Changes the Default Mode (light, dark)
 def mode(value, icon):
@@ -252,11 +298,11 @@ work_menu.add_command(label= f'{hours} Hours per Day')
 work_menu.add_command(label= f'{days} Days per Week')
 work_menu.add_command(label= f'{work_week} Hours per Week')
 work_menu.add_separator()
-work_menu.add_command(label= 'Change Settings', command= do_nothing)
+work_menu.add_command(label= 'Change Settings', command= change_workweek)
 settings_menu.add_separator()
 tax_menu.add_command(label= f'Tax Rate: {tax_rate}')
 tax_menu.add_separator()
-tax_menu.add_command(label= 'Change Tax Rate', command= do_nothing)
+tax_menu.add_command(label= 'Change Tax Rate', command= set_tax_rate)
 menu_bar.add_cascade(label='Settings', menu=settings_menu)
 
 help_menu = tk.Menu(menu_bar, tearoff=0)
