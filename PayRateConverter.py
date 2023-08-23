@@ -18,6 +18,10 @@ config = configparser.ConfigParser()
 config.read('settings.ini')
 set_mode = config['ENVIRONMENT']['mode']
 show_after_tax = config['TAX']['show_after_tax']
+tax_rate = config['TAX']['rate']
+hours = float(config['WORK.WEEK']['hours'])
+days = int(config['WORK.WEEK']['days'])
+work_week = hours * days
 
 if set_mode == 'dark':
     icon = 'assets/dollar-dark2.ico'
@@ -57,12 +61,7 @@ def error_handling(frequency, selection, enter):   # Error Handling and Control
             clear_entry()
 
 # Change show tax setting
-def savecheck():
-    global show_after_tax
-    show_after_tax = show_tax.get()
-
 def set_show_tax():
-    print('set_show_tax')
     config['TAX']['show_after_tax'] = str(show_tax.get())
     with open('settings.ini', 'w') as configfile:
             config.write(configfile)
@@ -121,6 +120,9 @@ def results(msg_text):  # Displays the Final Results in a New Window
     continue_btn.grid(row=i + 1, column=0, sticky='w', padx=10, pady=10)
     quit_btn.grid(row=i + 1, column=1, sticky='e', padx=10, pady=10)
     result.grab_set()
+
+def do_nothing():
+    pass
 
 # Clears the Entry Box and Resets
 def clear_entry():
@@ -240,6 +242,22 @@ view_menu.add_radiobutton(label='Light', state='normal', value='light', command=
 view_menu.add_radiobutton(label='Dark', state='active', value='dark', command=lambda: mode('dark', icon))
 view_menu.add_checkbutton(label= 'Show After Tax', state='active', onvalue= 1, offvalue= 0, variable= show_tax, command= set_show_tax)
 menu_bar.add_cascade(label='View', menu=view_menu)
+
+settings_menu = tk.Menu(menu_bar, tearoff=0)
+work_menu = tk.Menu(menu_bar, tearoff=0)
+tax_menu = tk.Menu(menu_bar, tearoff=0)
+settings_menu.add_cascade(menu= work_menu, label= 'Work Week')
+settings_menu.add_cascade(menu= tax_menu, label= 'Tax Rate')
+work_menu.add_command(label= f'{hours} Hours per Day')
+work_menu.add_command(label= f'{days} Days per Week')
+work_menu.add_command(label= f'{work_week} Hours per Week')
+work_menu.add_separator()
+work_menu.add_command(label= 'Change Settings', command= do_nothing)
+settings_menu.add_separator()
+tax_menu.add_command(label= f'Tax Rate: {tax_rate}')
+tax_menu.add_separator()
+tax_menu.add_command(label= 'Change Tax Rate', command= do_nothing)
+menu_bar.add_cascade(label='Settings', menu=settings_menu)
 
 help_menu = tk.Menu(menu_bar, tearoff=0)
 help_menu.add_command(label='Help', command=lambda: usedWind.help(icon))
