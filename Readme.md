@@ -16,8 +16,10 @@
     to wonder if you made an error, Pay Rate Converter does the math
     for you.
 
-    We currently only support conversions considering a 40 hour, 5 day
-    work week, however, we do plan to allow that to be changed by the
-    user. We also plan to add after estimated tax totals as well. The
-    estimated tax rates will be user configurable, along with the hours
-    per day, and days per week.
+    There is built in support for users to configure their work week,
+    as well as their own estimated tax rate. Found in the Settings menu,
+    the user will be able to view the current settings, as well as change
+    them.
+
+    We currently do not support calculations for overtime. All overtime
+    hours will be calculated as straight time, instead of time and a half.
