@@ -67,8 +67,6 @@ def set_show_tax():
             config.write(configfile)
 
 # Save custom settings (hours/day, days/week, & est. tax rate)
-
-
 def set_tax_rate():
 
     def change_tax():
@@ -91,8 +89,6 @@ def set_tax_rate():
     commit_btn = ctk.CTkButton(tax_win, text='Commit', command= change_tax)
     cancel_btn.grid(row= 1, column= 0, pady = 20)
     commit_btn.grid(row= 1, column= 2, pady = 20)
-
-
 
 def change_workweek():
 
@@ -122,8 +118,6 @@ def change_workweek():
     cancel_btn.grid(row= 1, column= 0, pady = 20)
     commit_btn.grid(row= 1, column= 2, pady = 20)
 
-    
-
 # Changes the Default Mode (light, dark)
 def mode(value, icon):
 
@@ -140,7 +134,6 @@ def mode(value, icon):
     config['ENVIRONMENT']['mode'] = set_mode
     with open('settings.ini', 'w') as configfile:
         config.write(configfile)
-
 
 def results(msg_text):  # Displays the Final Results in a New Window
     show_taxed = config['TAX']['show_after_tax']
