@@ -9,6 +9,9 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
     hours_daily = float(config['WORK.WEEK']['hours'])
     days_weekly = int(config['WORK.WEEK']['days'])
     work_week = hours_daily * days_weekly
+    if work_week > 40:
+        OT_hours = work_week - 40
+        work_week = 40 + (OT_hours * 1.5)
 
     def hourly(): #Perform Calculation for Hourly Pay
         match frequency:
@@ -22,6 +25,12 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
         taxed = estTax.tax(hourlyPay)
         tup = (text, hourlyPay, taxed)
         msg_text.append(tup)
+        if work_week > 40:
+            OT_pay = hourlyPay * 1.5
+            text = f'Est. OT Hourly pay for {OT_hours} hours:'
+            taxed = estTax.tax(OT_pay)
+            tup = (text, OT_pay, taxed)
+            msg_text.append(tup)
 
     def weekly(): #Perform Calculation for Weekly Pay
         match frequency:
@@ -87,7 +96,6 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
         taxed = estTax.tax(annualPay)
         tup = (text, annualPay, taxed)
         msg_text.append(tup)
-
     
     match selection:
         case 0: #Perform All Calculations
@@ -110,5 +118,3 @@ def case(frequency, selection, pay): # Decide which Calculations to Perform
         case 6: #Calculate Annual Pay
             annually()
     return msg_text
-
-

@@ -70,13 +70,15 @@ def set_show_tax():
 def set_tax_rate():
 
     def change_tax():
+        tax_rate = input_tax.get()
         try:
-            config['TAX']['rate'] = input_tax.get()
+            config['TAX']['rate'] = tax_rate
             with open('settings.ini', 'w') as configfile:
                 config.write(configfile)
         except:
             error_msg(2)
         tax_win.destroy()
+        
 
     tax_win = ctk.CTkToplevel()
     tax_win.title('PRC Set Estimated Tax Rate')
@@ -159,9 +161,6 @@ def results(msg_text):  # Displays the Final Results in a New Window
     continue_btn.grid(row=i + 1, column=0, sticky='w', padx=10, pady=10)
     quit_btn.grid(row=i + 1, column=1, sticky='e', padx=10, pady=10)
     result.grab_set()
-
-def do_nothing():
-    pass
 
 # Clears the Entry Box and Resets
 def clear_entry():
@@ -268,6 +267,7 @@ def main():  # Set up the gui
 
 show_tax = tk.IntVar(root, show_after_tax)
 # Set up the Menu
+
 menu_bar = tk.Menu(root)
 # Set up the File Menu <New, Exit>
 file_menu = tk.Menu(menu_bar, tearoff=0)
@@ -295,7 +295,7 @@ work_menu.add_command(label= 'Change Settings', command= change_workweek)
 settings_menu.add_separator()
 tax_menu.add_command(label= f'Tax Rate: {tax_rate}')
 tax_menu.add_separator()
-tax_menu.add_command(label= 'Change Tax Rate', command= set_tax_rate)
+tax_menu.add_command(label= 'Change Tax Rate', command= set_tax_rate())
 menu_bar.add_cascade(label='Settings', menu=settings_menu)
 
 help_menu = tk.Menu(menu_bar, tearoff=0)

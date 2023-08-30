@@ -21,5 +21,12 @@
     the user will be able to view the current settings, as well as change
     them.
 
-    We currently do not support calculations for overtime. All overtime
-    hours will be calculated as straight time, instead of time and a half.
+    Pay Rate Converter now calculates for Over Time hours, and will display
+    the Over Time HOURLY pay rate when hourly pay is calculated. 
+    PLEASE NOTE: Over Time pay rate will ONLY be displayed when the hourly
+    pay rate is calculated. All other rates will include the Over Time pay.
+
+    ************************************************************************
+    There is currently an issue when changes are made to the work week or 
+    tax rate, those changes will not update in the menu until the app has
+    been restarted. We are working to resolve this issue.
